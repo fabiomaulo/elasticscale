@@ -40,14 +40,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Company.cs" />
+    <Compile Include="Entity.cs" />
     <Compile Include="Events\DomainEvents.cs" />
     <Compile Include="Events\IDomainEvent.cs" />
     <Compile Include="Events\IDomainEventHandler.cs" />
     <Compile Include="Events\IDomainEventHandlersStore.cs" />
+    <Compile Include="IEntityTenantPersister.cs" />
     <Compile Include="IoC\IDepencencyInjectionContainer.cs" />
     <Compile Include="IoC\IDepencencyInjectionStore.cs" />
     <Compile Include="IoC\SimpleIoCContainer.cs" />
+    <Compile Include="Professional.cs" />
+    <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Workdone.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
