@@ -40,6 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\DomainEvents.cs" />
+    <Compile Include="Events\IDomainEvent.cs" />
+    <Compile Include="Events\IDomainEventHandler.cs" />
+    <Compile Include="Events\IDomainEventHandlersStore.cs" />
     <Compile Include="IoC\IDepencencyInjectionContainer.cs" />
     <Compile Include="IoC\IDepencencyInjectionStore.cs" />
     <Compile Include="IoC\SimpleIoCContainer.cs" />
