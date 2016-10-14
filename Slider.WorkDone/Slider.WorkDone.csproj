@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Company.cs" />
+    <Compile Include="Data\Ado\TenantPersister.cs" />
+    <Compile Include="Data\ITenantPersister.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Events\DomainEvents.cs" />
     <Compile Include="Events\IDomainEvent.cs" />
@@ -53,8 +55,11 @@
     <Compile Include="Professional.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SubscriptionLevel.cs" />
+    <Compile Include="Tenant.cs" />
     <Compile Include="Workdone.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
