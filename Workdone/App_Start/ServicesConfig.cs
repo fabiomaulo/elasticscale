@@ -25,6 +25,7 @@ namespace Slider.WorkDone.Api
 		private static void RegisterControllers(IDepencencyInjectionStore store)
 		{
 			store.RegisterTransient(c=> new SubscriptionsController(c.GetInstance<ITenantPersister>()));
+			store.RegisterTransient(c => new CompaniesController(c.GetInstance<ICompanyPersister>()));
 		}
 
 		private static void RegisterPersisters(IDepencencyInjectionStore store)
@@ -45,6 +46,11 @@ namespace Slider.WorkDone.Api
 				c.GetInstance<ShardMapManager>(),
 				c.GetInstance<MultiverseConfiguration>(),
 				c.GetInstance<SmmFacility>(),
+				c.GetInstance<DbFacility>()
+				));
+			store.RegisterSingleton<ICompanyPersister>(c => new CompanyPersister(
+				c.GetInstance<ShardMapManager>(),
+				c.GetInstance<MultiverseConfiguration>(),
 				c.GetInstance<DbFacility>()
 				));
 		}
