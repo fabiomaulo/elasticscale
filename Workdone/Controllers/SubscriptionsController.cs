@@ -22,9 +22,27 @@ namespace Slider.WorkDone.Api.Controllers
 			this.tenantPersister = tenantPersister;
 		}
 
-		public Task<IHttpActionResult> Get(Guid id)
+		[SwaggerOperation("Get")]
+		[SwaggerResponse(HttpStatusCode.NotFound)]
+		[SwaggerResponse(HttpStatusCode.OK)]
+		[ResponseType(typeof(Subscription))]
+		[Route("{id:guid}")]
+		public async Task<IHttpActionResult> Get(Guid id)
 		{
-			return Task.FromResult<IHttpActionResult>(Ok());
+			var tenant = await tenantPersister.Get(id);
+			if (tenant == null)
+			{
+				return NotFound();
+			}
+			var subscription = new Subscription
+			{
+				Id = tenant.Id,
+				Owner = tenant.Owner,
+				Name = tenant.Name,
+				Level = tenant.Level,
+				StateLink = Url.Route("SubscriptionState", new { id = tenant.Id })
+			};
+			return Ok(subscription);
 		}
 
 		[SwaggerOperation("State")]
