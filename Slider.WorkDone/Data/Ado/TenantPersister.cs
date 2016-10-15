@@ -41,6 +41,15 @@ namespace Slider.WorkDone.Data.Ado
 			this.conf = conf;
 		}
 
+		public async Task<Tenant> Get(Guid id)
+		{
+			using (var conn = new SqlConnection(connectionString))
+			{
+				await conn.OpenAsync();
+				return await conn.QueryFirstOrDefaultAsync<Tenant>("select * From Tenants where Id = @id", new { id });
+			}
+		}
+
 		public async Task<bool> Exists(string email)
 		{
 			using (var conn = new SqlConnection(connectionString))
