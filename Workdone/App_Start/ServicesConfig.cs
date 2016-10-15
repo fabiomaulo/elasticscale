@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Dependencies;
+using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
 using Slider.WorkDone.Api.Controllers;
 using Slider.WorkDone.Data;
 using Slider.WorkDone.Data.Ado;
+using Slider.WorkDone.Data.ElasticScale;
 using Slider.WorkDone.IoC;
 
 namespace Slider.WorkDone.Api
@@ -25,7 +29,24 @@ namespace Slider.WorkDone.Api
 
 		private static void RegisterPersisters(IDepencencyInjectionStore store)
 		{
-			store.RegisterSingleton<ITenantPersister>(c=> new TenantPersister());
+			var conf = new MultiverseConfiguration
+			{
+				ShardMapManagerServerName = ConfigurationManager.AppSettings["ServerName"],
+				UniverseServerName = ConfigurationManager.AppSettings["ServerName"],
+				UniverseUserId = ConfigurationManager.AppSettings["UserName"],
+				UniversePassword = ConfigurationManager.AppSettings["Password"]
+			};
+			store.RegisterSingleton(conf);
+			store.RegisterSingleton(new DbFacility(conf.UniverseUserId, conf.UniversePassword));
+			store.RegisterSingleton(c => new SmmFacility(conf, c.GetInstance<DbFacility>()));
+			store.RegisterSingleton(c=> c.GetInstance<SmmFacility>().CreateOrGetShardMapManager());
+
+			store.RegisterSingleton<ITenantPersister>(c=> new TenantPersister(
+				c.GetInstance<ShardMapManager>(),
+				c.GetInstance<MultiverseConfiguration>(),
+				c.GetInstance<SmmFacility>(),
+				c.GetInstance<DbFacility>()
+				));
 		}
 
 		private class Resolver : IDependencyResolver
