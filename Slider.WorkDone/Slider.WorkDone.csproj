@@ -49,10 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Company.cs" />
+    <Compile Include="Data\Ado\CompanyPersister.cs" />
+    <Compile Include="Data\Ado\EntityTenantPersisterBase.cs" />
     <Compile Include="Data\Ado\TenantPersister.cs" />
     <Compile Include="Data\ElasticScale\DbFacility.cs" />
     <Compile Include="Data\ElasticScale\MultiverseConfiguration.cs" />
     <Compile Include="Data\ElasticScale\SmmFacility.cs" />
+    <Compile Include="Data\ICompanyPersister.cs" />
     <Compile Include="Data\ITenantPersister.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Events\DomainEvents.cs" />
