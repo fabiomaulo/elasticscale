@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Slider.WorkDone.Data.ElasticScale
@@ -146,7 +147,7 @@ namespace Slider.WorkDone.Data.ElasticScale
 			return true;
 		}
 
-		public async Task Verify(string server, string db, Func<Stream> shardInitializerStript, Action<string> stepOverCallBack = null, string dbEdition = "Basic", bool waitIsOnLine = true)
+		public async Task Verify(string server, string db, Func<Stream> shardInitializerStript, Action<string> stepOverCallBack = null, string dbEdition = "Basic")
 		{
 			if (await Exists(server, db))
 			{
@@ -156,7 +157,7 @@ namespace Slider.WorkDone.Data.ElasticScale
 			{
 				throw new ArgumentNullException(nameof(shardInitializerStript));
 			}
-			await CreateDatabase(server, db, dbEdition, waitIsOnLine, stepOverCallBack);
+			await CreateDatabase(server, db, dbEdition, true, stepOverCallBack);
 			var connectionstring = GetConnectionString(server, db);
 			await ExecuteSqlScript(connectionstring, shardInitializerStript());
 		}
