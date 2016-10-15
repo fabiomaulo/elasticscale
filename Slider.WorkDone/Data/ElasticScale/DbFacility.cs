@@ -146,7 +146,7 @@ namespace Slider.WorkDone.Data.ElasticScale
 			return true;
 		}
 
-		public async Task Verify(string server, string db, Func<Stream> shardInitializerStript, Action<string> stepOverCallBack = null, string dbEdition = "Basic")
+		public async Task Verify(string server, string db, Func<Stream> shardInitializerStript, Action<string> stepOverCallBack = null, string dbEdition = "Basic", bool waitIsOnLine = true)
 		{
 			if (await Exists(server, db))
 			{
@@ -156,7 +156,7 @@ namespace Slider.WorkDone.Data.ElasticScale
 			{
 				throw new ArgumentNullException(nameof(shardInitializerStript));
 			}
-			await CreateDatabase(server, db, dbEdition, true, stepOverCallBack);
+			await CreateDatabase(server, db, dbEdition, waitIsOnLine, stepOverCallBack);
 			var connectionstring = GetConnectionString(server, db);
 			await ExecuteSqlScript(connectionstring, shardInitializerStript());
 		}
