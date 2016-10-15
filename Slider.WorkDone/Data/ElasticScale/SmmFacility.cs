@@ -110,7 +110,7 @@ namespace Slider.WorkDone.Data.ElasticScale
 			{
 				callBack("No se pudo determinar el nombre de la location del shard (dbname).");
 			}
-			await dataBase.Verify(conf.UniverseServerName, dbName, shardInitializerStript, callBack, dbEdition);
+			await dataBase.Verify(conf.UniverseServerName, dbName, shardInitializerStript, callBack, dbEdition, false);
 
 			callBack("Verificando inicialización del shard.");
 			var shardLocation = new ShardLocation(conf.UniverseServerName, dbName);
