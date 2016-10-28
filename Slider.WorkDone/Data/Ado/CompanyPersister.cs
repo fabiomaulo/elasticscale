@@ -2,19 +2,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
-using Slider.WorkDone.Data.ElasticScale;
 
 namespace Slider.WorkDone.Data.Ado
 {
-	public class CompanyPersister : EntityTenantPersisterBase, ICompanyPersister
+	public class CompanyPersister : ICompanyPersister
 	{
-		public CompanyPersister(ShardMapManager smm, MultiverseConfiguration conf, DbFacility database) : base(smm, conf, database) {}
+		private readonly IConnectionProvider connectionProvider;
+		public CompanyPersister(IConnectionProvider connectionProvider)
+		{
+			if (connectionProvider == null)
+			{
+				throw new ArgumentNullException(nameof(connectionProvider));
+			}
+			this.connectionProvider = connectionProvider;
+		}
 
 		public async Task Persist(Guid tenantId, Company entity)
 		{
 			entity.TenantId = tenantId;
-			using (var conn = await GetConnectionOrThrows(tenantId))
+			using (var conn = await connectionProvider.OpenConnection(tenantId))
 			{
 				if (Guid.Empty.Equals(entity.Id))
 				{

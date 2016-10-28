@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Dependencies;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
@@ -34,25 +33,37 @@ namespace Slider.WorkDone.Api
 			{
 				ShardMapManagerServerName = ConfigurationManager.AppSettings["ServerName"],
 				UniverseServerName = ConfigurationManager.AppSettings["ServerName"],
-				UniverseUserId = ConfigurationManager.AppSettings["UserName"],
-				UniversePassword = ConfigurationManager.AppSettings["Password"]
+				UniverseUserId = ConfigurationManager.AppSettings["Slider:UserName"],
+				UniversePassword = ConfigurationManager.AppSettings["Slider:Password"]
 			};
 			store.RegisterSingleton(conf);
 			store.RegisterSingleton(new DbFacility(conf.UniverseUserId, conf.UniversePassword));
 			store.RegisterSingleton(c => new SmmFacility(conf, c.GetInstance<DbFacility>()));
 			store.RegisterSingleton(c=> c.GetInstance<SmmFacility>().CreateOrGetShardMapManager());
 
-			store.RegisterSingleton<ITenantPersister>(c=> new TenantPersister(
+			if (ConfigurationManager.AppSettings["Slider:BeElastic"].Equals("true", StringComparison.OrdinalIgnoreCase))
+			{
+				store.RegisterSingleton<IConnectionProvider>(c => new ElasticScaleConnectionProvider(
 				c.GetInstance<ShardMapManager>(),
 				c.GetInstance<MultiverseConfiguration>(),
-				c.GetInstance<SmmFacility>(),
-				c.GetInstance<DbFacility>()
-				));
-			store.RegisterSingleton<ICompanyPersister>(c => new CompanyPersister(
-				c.GetInstance<ShardMapManager>(),
-				c.GetInstance<MultiverseConfiguration>(),
-				c.GetInstance<DbFacility>()
-				));
+				c.GetInstance<DbFacility>())
+				);
+				store.RegisterSingleton<ITenantsCommonConnectionProvider>(c => new ElasticTenantsCommonConnectionProvider(
+					c.GetInstance<ShardMapManager>(),
+					c.GetInstance<MultiverseConfiguration>(),
+					c.GetInstance<SmmFacility>(),
+					c.GetInstance<DbFacility>()
+					));
+			}
+			else
+			{
+				var connectionString = ConfigurationManager.ConnectionStrings["Slider:Once"].ConnectionString;
+				store.RegisterSingleton<IConnectionProvider>(c => new FixedConnectionProvider(connectionString));
+				store.RegisterSingleton<ITenantsCommonConnectionProvider>(c => new FixedTenantsCommonConnectionProvider(connectionString));
+			}
+
+			store.RegisterSingleton<ITenantPersister>(c=> new TenantPersister(c.GetInstance<ITenantsCommonConnectionProvider>()));
+			store.RegisterSingleton<ICompanyPersister>(c => new CompanyPersister(c.GetInstance<IConnectionProvider>()));
 		}
 
 		private class Resolver : IDependencyResolver
