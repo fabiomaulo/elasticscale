@@ -50,9 +50,14 @@
   <ItemGroup>
     <Compile Include="Company.cs" />
     <Compile Include="Data\Ado\CompanyPersister.cs" />
-    <Compile Include="Data\Ado\EntityTenantPersisterBase.cs" />
+    <Compile Include="Data\Ado\FixedConnectionProvider.cs" />
+    <Compile Include="Data\Ado\FixedTenantsCommonConnectionProvider.cs" />
+    <Compile Include="Data\Ado\IConnectionProvider.cs" />
+    <Compile Include="Data\Ado\ITenantsCommonConnectionProvider.cs" />
     <Compile Include="Data\Ado\TenantPersister.cs" />
     <Compile Include="Data\ElasticScale\DbFacility.cs" />
+    <Compile Include="Data\ElasticScale\ElasticScaleConnectionProvider.cs" />
+    <Compile Include="Data\ElasticScale\ElasticTenantsCommonConnectionProvider.cs" />
     <Compile Include="Data\ElasticScale\MultiverseConfiguration.cs" />
     <Compile Include="Data\ElasticScale\SmmFacility.cs" />
     <Compile Include="Data\ICompanyPersister.cs" />
